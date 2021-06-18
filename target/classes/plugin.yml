@@ -1,3 +1,13 @@
-main: xyz.fbcf.mcplugin.App
-name: mcplugin
+main: xyz.fbcf.pridecraft.App
+name: pridecraft
 version: 0.1
+authors: [funkeypigeon, efbicief, adrakaris]
+api-version: 1.17
+
+commands:
+  Lavarain:
+  Break:
+  Launch:
+  Deletehand:
+  Arrowtrail:
+  Randomweapon:

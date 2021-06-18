@@ -1,46 +1,43 @@
-package xyz.fbcf.mcplugin;
+package xyz.fbcf.pridecraft;
 
-import java.net.http.WebSocket.Listener;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.UUID;
-import java.util.HashMap;
 
 import org.bukkit.util.Vector;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.command.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 
 public class App extends JavaPlugin implements org.bukkit.event.Listener {
 
-    private ArrayList<UUID> arrowTrails = new ArrayList<>();
-    private HashMap<Projectile, BukkitTask> tasks = new HashMap<>();
+    ArrayList<Player> players = new ArrayList<Player>();
+    ArrayList<Player> playersSu = new ArrayList<Player>();
+    ArrayList<Player> playersC = new ArrayList<Player>();
+    ArrayList<Player> playersA = new ArrayList<Player>();
+    ArrayList<Player> playersSp = new ArrayList<Player>();
+    Material[] weapons = {Material.DIAMOND_SWORD, Material.GOLDEN_SWORD, Material.IRON_SWORD, Material.STONE_SWORD, Material.NETHERITE_SWORD, Material.NETHERITE_AXE, Material.DIAMOND_AXE, Material.BOW, Material.CROSSBOW};
 
     @Override
     public void onEnable() {
         // runs on startup, reload, plugin reload
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("Hello, MineSoc and EsportsSoc!");
+
+        ArrowTrail ARROWTRAIL = new ArrowTrail(this);
+        this.getCommand("arrowtrail").setExecutor(ARROWTRAIL);
+        this.getServer().getPluginManager().registerEvents(ARROWTRAIL, this);
+
+
     }
     @Override
     public void onDisable() {
@@ -52,63 +49,24 @@ public class App extends JavaPlugin implements org.bukkit.event.Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        player.sendMessage("Welcome to the server, !");
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Welcome to the server, " + player.getDisplayName() + "&6!"));
     }
 
-    @EventHandler
-    public void trail(ProjectileLaunchEvent e) {
-        //Bukkit.broadcastMessage("onProjectileLaunch");
-        if (e.getEntity().getShooter() instanceof Player && e.getEntity() instanceof Arrow) {
-            
-            final Arrow arrowF = (Arrow) e.getEntity();
-            Player shooter = (Player) e.getEntity().getShooter();
-
-            if (arrowTrails.contains(shooter.getUniqueId())) {
-                tasks.put(e.getEntity(), new BukkitRunnable() {
-                    @Override
-                    public void run() {  
-                        
-                        //World w = arrowF.getWorld();
-                        //Location l = arrowF.getLocation();  // get arrow
-                        arrowF.setColor(Color.fromRGB(getRandomNumberInRange(0, 255), getRandomNumberInRange(0, 255), getRandomNumberInRange(0, 255)));  // set random colr
-                        arrowF.playEffect(EntityEffect.LOVE_HEARTS);  // play smoke which should have random colour
-                    }
-                }.runTaskTimer(this, 0L, 1L));
-            }
-        }
-    }
-
-    @EventHandler
-    public void onProjectileHit(ProjectileHitEvent e) {
-        // Bukkit.broadcastMessage("onProjectileHit");
-        if (e.getEntity().getShooter() instanceof Player) {
-            BukkitTask task = tasks.get(e.getEntity());
-            if (task != null) {
-                task.cancel();
-                tasks.remove(e.getEntity());
-            }
-        }
-    }
-
-    private static int getRandomNumberInRange(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
+    static int getRandomNumberInRange(int min, int max) {
+        if (min >= max) throw new IllegalArgumentException("max must be greater than min");
 
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        //Location playerLoc = player.getLocation();
 
         // create players lists
-        ArrayList<Player> players = new ArrayList<Player>();
-        ArrayList<Player> playersSu = new ArrayList<Player>();
-        ArrayList<Player> playersC = new ArrayList<Player>();
-        ArrayList<Player> playersA = new ArrayList<Player>();
-        ArrayList<Player> playersSp = new ArrayList<Player>();
+        players = new ArrayList<Player>();
+        playersSu = new ArrayList<Player>();
+        playersC = new ArrayList<Player>();
+        playersA = new ArrayList<Player>();
+        playersSp = new ArrayList<Player>();
         for (Player p : Bukkit.getOnlinePlayers()) {
             players.add(p);
             if (p.getGameMode() == GameMode.SURVIVAL) playersSu.add(p);
@@ -116,6 +74,9 @@ public class App extends JavaPlugin implements org.bukkit.event.Listener {
             else if (p.getGameMode() == GameMode.ADVENTURE) playersA.add(p);
             else if (p.getGameMode() == GameMode.SPECTATOR) playersSp.add(p);
         }
+
+        Player player = (Player) sender;
+        //Location playerLoc = player.getLocation();
 
         // When someone donates for lava rain, spawn lava 10 blocks above them for 10 seconds, then remove
         if (label.equalsIgnoreCase("lavarain")) {
@@ -139,9 +100,7 @@ public class App extends JavaPlugin implements org.bukkit.event.Listener {
                 @Override
                 public void run() {
                     // method to run after delay
-                    for (Block b : blocksF) {
-                        b.setType(Material.AIR);
-                    }
+                    for (Block b : blocksF) b.setType(Material.AIR);
                 }
             }, 100); // delay of 100ticks
 
@@ -187,23 +146,20 @@ public class App extends JavaPlugin implements org.bukkit.event.Listener {
 
         }
 
+        // Delete item in player's hand
         if (label.equalsIgnoreCase("deletehand")) {
             // Announce that someone has donated
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + "&6 has triggered &c&a&oDelete Hand&r&6! Say goodbye to your item! Donate at &e(url here)"));
 
-            for (Player p: playersSu) {
-                //p.setItemInHand(null); //deprecated
-                p.getInventory().setItemInMainHand(null);
-            }
+            for (Player p: playersSu) p.getInventory().setItemInMainHand(null);
         }
 
-        // toggle whether or not arrows spawn 
-        if (label.equalsIgnoreCase("arrowtrail")) {
-            // donate message
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + "&6 has enabled &4a&cr&6r&eo&aw&2 t&3r&ba&9i&1l&5s! &6Donate at &e(url here)"));
-            // toggle thing
-            arrowTrails.add(player.getUniqueId());
-
+        // Give everyone a random weapon
+        if (label.equalsIgnoreCase("randomweapon")) {
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + "&6 has given everyone a &a&lRandom Weapon&6! &6Donate at &e(url here)"));
+            for (Player p : players) {
+                p.getInventory().addItem(new ItemStack(weapons[getRandomNumberInRange(0, weapons.length-1)], 1));
+            }
         }
 
         return true;
