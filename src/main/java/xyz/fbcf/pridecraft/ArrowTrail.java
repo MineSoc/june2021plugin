@@ -84,17 +84,17 @@ public class ArrowTrail implements CommandExecutor, Listener {
         }
     }
 
-    @EventHandler
-    public void onProjectileHit(ProjectileHitEvent e) {
-        // Bukkit.broadcastMessage("onProjectileHit");
-        if (e.getEntity().getShooter() instanceof Player && enabled) {
-            BukkitTask task = tasks.get(e.getEntity());
-            if (task != null) {
-                task.cancel();
-                tasks.remove(e.getEntity());
-            }
-        }
-    }
+    // @EventHandler
+    // public void onProjectileHit(ProjectileHitEvent e) {
+    //     // Bukkit.broadcastMessage("onProjectileHit");
+    //     if (e.getEntity().getShooter() instanceof Player && enabled) {
+    //         BukkitTask task = tasks.get(e.getEntity());
+    //         if (task != null) {
+    //             task.cancel();
+    //             tasks.remove(e.getEntity());
+    //         }
+    //     }
+    // }
 
 
 }
