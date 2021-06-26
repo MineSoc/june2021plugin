@@ -19,9 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.World;
 import org.bukkit.entity.*;
 
 public class App extends JavaPlugin implements org.bukkit.event.Listener {
@@ -32,7 +29,7 @@ public class App extends JavaPlugin implements org.bukkit.event.Listener {
     ArrayList<Player> playersA = new ArrayList<Player>();
     ArrayList<Player> playersSp = new ArrayList<Player>();
 
-    private final String DONATE_URL = "insert url here";
+    private final String DONATE_URL = "https://bit.ly/2U6k9Kl";
 
     Material[] weapons = { Material.DIAMOND_SWORD, Material.GOLDEN_SWORD, Material.IRON_SWORD, Material.STONE_SWORD, Material.NETHERITE_SWORD, Material.NETHERITE_AXE, Material.DIAMOND_AXE, Material.BOW, Material.CROSSBOW };
 
@@ -156,6 +153,8 @@ public class App extends JavaPlugin implements org.bukkit.event.Listener {
             int playerIndex = getRandomNumberInRange(0, playersSuA.size()-1);
             playersSuA.get(playerIndex).setVelocity(new Vector(0, 1000, 0));
 
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', playersSuA.get(playerIndex).getDisplayName() + "&6 to the moon! Donate at &e " + DONATE_URL));
+
         }
 
         // Delete item in player's hand
@@ -257,11 +256,13 @@ public class App extends JavaPlugin implements org.bukkit.event.Listener {
 
         else if (label.equalsIgnoreCase("trap")){
             //announce trap
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', args[0] + "&6 has &9&lTrapped&6 a random person ! &6Donate at &e " + DONATE_URL));
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', args[0] + "&6 has &9&lTrapped&6 a random person! Donate at &e " + DONATE_URL));
 
             // choose random player
             int playerIndex = getRandomNumberInRange(0, playersSuA.size()-1);
             Player p = playersSuA.get(playerIndex);
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', p.getDisplayName() + "&6 is stuck in a maze! Donate at &e " + DONATE_URL));
+
 
             int[][] maze = MazeGen.generateMaze();
             for(int[] j : maze){

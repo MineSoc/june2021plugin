@@ -4,26 +4,15 @@ import java.util.HashMap;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Particle.DustOptions;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.Particle.DustOptions;
 import org.bukkit.material.*;
 
 import net.md_5.bungee.api.ChatColor;
@@ -55,7 +44,7 @@ public class Gay implements CommandExecutor, Listener {
             
             if (enabled) { sender.sendMessage("Already enabled, please enable once current duration over"); return true; }
 
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', args[0] + "&6 has enabled &rainbowrainbow particle effects&6! &6Donate at &e(url here)"));
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', args[0] + "&6 has enabled &b&player particles&6! &6Donate at &e(url here)"));
             enabled = true;
             for (final Player p : Bukkit.getOnlinePlayers()) {
                 Bukkit.broadcastMessage(p.getDisplayName());
